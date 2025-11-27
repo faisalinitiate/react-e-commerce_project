@@ -134,7 +134,7 @@ const aboutimg4 = "https://images.unsplash.com/photo-1519681393784-d120267933ba"
 </div>
 </section>
 
- <div className="max-w-5xl mx-auto">
+ <div className="w-full">
      <Footer />
  </div>
     </div>

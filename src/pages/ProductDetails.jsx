@@ -4,9 +4,13 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { Usecart } from "../common/Usecart";
-
-
-
+import hoodies from "../assets/hoodies.png";
+import hoodiesone from "../assets/hoodiesone.jpg";
+import hoodiestwo from "../assets/hoodiestwo.jpg";
+import hoodiesthree from "../assets/hoodiesthree.jpg";
+import hoodiesfour from "../assets/hoodiesthree.jpg";
+import hoodiesfive from "../assets/hoodiesfive.png";
+import hoodiessix from "../assets/hoodiessix.png";
 
 // ✅ Detailed product data + display logic
 export default function ProductDetails() {
@@ -28,13 +32,15 @@ export default function ProductDetails() {
       tags: ["Winter", "Comfort", "Casual"],
       sizes: ["S", "M", "L", "XL"],
       images: [
-        "https://placehold.co/100x150?text=Hoodie+1",
-        "https://placehold.co/100x150?text=Hoodie+2",
-        "https://placehold.co/100x150?text=Hoodie+3",
-        "https://placehold.co/100x150?text=Hoodie+4",
-        "https://placehold.co/100x150?text=Hoodie+5",
+        hoodiesone,  
+        hoodiestwo,
+        hoodiesthree,
+           hoodiesfour,
+              hoodiesfive,
+                 hoodiessix,
+     
       ],
-      mainImage: "https://placehold.co/600x800?text=Urban+Hoodie",
+      mainImage: hoodies,
       bottomBanner: "https://placehold.co/1200x400?text=Urban+Hoodie+Banner",
       specs: [
         { label: "Material", value: "80% Cotton, 20% Polyester" },

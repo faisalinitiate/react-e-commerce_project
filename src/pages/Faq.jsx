@@ -59,7 +59,7 @@ export default function Purchase() {
 
       {/* FAQ CONTENT */}
       <main className="container mx-auto px-6 py-14">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-7xl mx-auto space-y-6">
           {faqList.map((item, index) => (
             <div
               key={index}

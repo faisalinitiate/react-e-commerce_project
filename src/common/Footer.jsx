@@ -73,7 +73,7 @@ const Newsletter = () => {
 };
 
 export default function Footer() {
-  const companyName = 'ShopZen';
+  const companyName = 'SHOPZEN';
 
   const usefulLinks = [
     { name: 'About Us', link: '#' },

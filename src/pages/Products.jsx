@@ -1,10 +1,18 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { Link } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
+
 
 
 export default function Product() {
+
+
+
+
 
   const SIDEBAR_IMG = "https://placehold.co/80x80?text=F"; // sidebar icon
   // --- Helper lists ---
@@ -15,69 +23,67 @@ export default function Product() {
   const baseProducts = [
     {
       id: 1,
-      name: "Urban Hoodie",
+      name: "Men",
       price: 79,
-      category: "Hoodies",
+      category: "Men",
       image: "https://placehold.co/600x800?text=T-Shirt",
      
     },
     {
       id: 2,
-      name: "Summer Tee",
+      name: "Women",
       price: 39,
-      category: "T-Shirts",
+      category: "Women",
       image: "https://placehold.co/600x800?text=Hoodie",
     
     },
     {
       id: 3,
-      name: "Denim Jacket",
+      name: "Kids",
       price: 119,
-      category: "Jackets",
+      category: "Kids",
       image: "https://placehold.co/600x800?text=T-Shirt",
      
     },
     {
       id: 4,
-      name: "Street Sneakers",
+      name: "Men",
       price: 149,
-      category: "Shoes",
+      category: "Accessories",
       image: "https://placehold.co/1600x500?text=Shop+Collection",
     
     },
     {
       id: 5,
-      name: "Urban Hoodie",
+      name: "Women",
       price: 79,
-      category: "Hoodies",
+      category: "Women",
       image: "https://placehold.co/600x800?text=T-Shirt",
   
     },
     {
       id: 6,
-      name: "Summer Tee",
+      name: "Kids",
       price: 39,
-      category: "T-Shirts",
+      category: "Men",
       image: "https://placehold.co/600x800?text=T-Shirt",
  
     },
     {
       id: 7,
-      name: "Denim Jacket",
+      name: "Accessories",
       price: 119,
-      category: "Jackets",
+      category: "Accessories",
       image: "https://placehold.co/600x800?text=T-Shirt",
-      offer: false,
-      upcomingOffer: false,
+     
     },
     {
       id: 8,
-      name: "Street Sneakers",
+      name: "Accessories",
       price: 149,
-      category: "Shoes",
+      category: "Kids",
       image: "https://placehold.co/600x800?text=T-Shirt",
-      offer: true,
-      upcomingOffer: false,
+     
     },
   ];
 
@@ -99,7 +105,12 @@ export default function Product() {
   }, [baseProducts]);
 
   // --- UI state ---
-  const [activeCategory, setActiveCategory] = useState("All");
+  const location = useLocation();
+
+// read category from query ?category=Men
+const urlParams = new URLSearchParams(location.search);
+const categoryFromURL = urlParams.get("category");
+
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [priceMin, setPriceMin] = useState("");
@@ -107,7 +118,16 @@ export default function Product() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortBy, setSortBy] = useState("default");
+const [activeCategory, setActiveCategory] = useState(() => {
+  return categoryFromURL || "All";
+});
 
+// UPDATE when URL changes
+useEffect(() => {
+  if (categoryFromURL) {
+    setActiveCategory(categoryFromURL);
+  }
+}, [categoryFromURL]);
   // --- derive categories & counts from PRODUCTS ---
   const categories = useMemo(() => {
     const counts = PRODUCTS.reduce((acc, p) => {
@@ -186,15 +206,13 @@ export default function Product() {
   }
 
   // --- Stars component ---
-  const Stars = ({ size = 14 }) => (
-    <div className="flex items-center gap-1" aria-hidden>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className="text-amber-400">
-          <path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.46L19.335 24 12 19.897 4.665 24l1.535-8.79L.6 9.75l7.732-1.732L12 .587z" />
-        </svg>
-      ))}
-    </div>
-  );
+const Stars = ({ size = 14 }) => (
+  <div className="flex items-center gap-1 text-amber-400">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <FaStar key={i} size={size} />
+    ))}
+  </div>
+);
 
   return (
     <div className="min-h-screen w-full">
@@ -258,7 +276,7 @@ export default function Product() {
             </div>
 
             <div className="mb-4 sm:shadow-sm">
-         <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-400 inline-block pb-1">
+         <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-200 inline-block pb-1">
   Color
 </h3>
               <ul className="grid grid-cols-2 gap-2">
@@ -275,7 +293,7 @@ export default function Product() {
             </div>
 
             <div className="mb-4 sm:shadow-sm">
-    <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-400 inline-block pb-1">
+    <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-200 inline-block pb-1">
   Size
 </h3>
               <ul className="grid grid-cols-3 gap-2">
@@ -352,7 +370,7 @@ export default function Product() {
 
                     <div className="mt-4 pt-3 border-t border-white/30">
                       {/* View Details Link - redirects to ProductDetails.jsx route */}
-                      <Link to={`/products/${p.id}`} className="block mt-2 py-2.5 px-6 rounded-xl font-semibold bg-teal-600 text-white transition-all duration-400 hover:bg-teal-700 hover:shadow-lg hover:shadow-teal-200 hover:-translate-y-1 text-center">
+                      <Link to={`/products/${p.id}`} className="block mt-2 py-2.5 px-6 rounded-xl font-semibold bg-amber-400 text-white transition-all duration-400 hover:bg-yellow-300 hover:shadow-lg hover:-translate-y-1 text-center">
                         View Details
                       </Link>
                     </div>

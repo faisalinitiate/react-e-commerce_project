@@ -1,20 +1,32 @@
 import React, { useState } from "react";
 import { ChevronDown, Heart, ShoppingBag, User, RefreshCcw, Scale } from "lucide-react";
 import { FaShoppingBag } from 'react-icons/fa';
-import { Usecart } from "./UseCart"; // <-- make sure path is correct
+import { Link } from "react-router-dom";       //  <-- ADD THIS
+import { Usecart } from "./UseCart";
+import { useNavigate } from "react-router-dom";
 
 const menuLinks = [
-  { id: 1, name: 'Home', link: '/'},
+  { id: 1, name: 'Home', link: '/' },
   { id: 2, name: 'Products', link: '/products' },
   { id: 3, name: 'Faq', link: '/faq' },
   { id: 4, name: 'About', link: '/about' },
   { id: 5, name: 'Contact', link: '/contact' }
 ];
 
-export default function Header() {
-  const [open, setOpen] = useState(false);
-  const { cartCount, toggleCart } = Usecart();   // <-- ACCESS CART CONTEXT
 
+export default function Header() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const { cartCount, toggleCart } = Usecart();
+  
+  function handleCategorySelect(e) {
+    const value = e.target.value;
+    if (value === "All Category") {
+      navigate("/products");
+    } else {
+      navigate(`/products?category=${value}`);
+    }
+  }
   const categories = [
     "Feature Product","Perfume & Cologne","Best Sellers","Men Fashion",
     "Bags & Shoes","Women Fashion","Kids & Baby","Men's Clothing",
@@ -23,29 +35,30 @@ export default function Header() {
 
   return (
     <>
-      <header className=" bg-white shadow-sm">
+      <header className="bg-white shadow-sm">
         <div className="container mx-auto flex justify-between items-center px-4 py-5">
 
           {/* LOGO */}
           <div className="flex items-center gap-2">
-         <a
-          href="#"
-          className="flex items-center text-blue-600 font-bold text-2xl tracking-wide uppercase space-x-2"
-        >
-          <FaShoppingBag className="text-3xl" />
-          <span>SHOPZEN</span>
-        </a>
+            <a href="/" className="flex items-center text-blue-600 font-bold text-2xl tracking-wide uppercase space-x-2">
+              <FaShoppingBag className="text-3xl" />
+              <span>SHOPZEN</span>
+            </a>
           </div>
 
           {/* SEARCH BAR */}
           <div className="flex-1 mx-8 max-w-3xl">
             <div className="flex items-center bg-amber-50 border border-amber-200 rounded-full shadow-inner overflow-hidden">
-              <select className="bg-transparent px-4 py-3 text-gray-700 border-r outline-none cursor-pointer">
-                <option>All Category</option>
-                <option>Men</option>
-                <option>Women</option>
-                <option>Kids</option>
-              </select>
+              <select
+  onChange={handleCategorySelect}
+  className="bg-transparent px-4 py-3 text-gray-700 border-r outline-none cursor-pointer"
+>
+  <option>All Category</option>
+  <option>Men</option>
+  <option>Women</option>
+  <option>Kids</option>
+</select>
+
 
               <input
                 className="flex-1 px-4 py-3 bg-transparent outline-none text-gray-700"
@@ -61,25 +74,34 @@ export default function Header() {
           {/* ACTIONS */}
           <div className="flex items-center gap-6 text-gray-700">
 
-            <button className="flex items-center gap-2 hover:text-emerald-600 transition">
+            {/* Compare */}
+            {/* <button className="flex items-center gap-2 hover:text-emerald-600 transition">
               <Scale size={18} /> <span>Compare</span>
-            </button>
+            </button> */}
 
-            <button className="flex items-center gap-2 hover:text-emerald-600 transition">
-              <User size={18} /> <span>Login</span>
-            </button>
+            {/* LOGIN → FIXED */}
+            <Link
+              to="/login"
+              className="flex items-center gap-2 hover:text-emerald-600 transition"
+            >
+              <User size={18} />
+              <span> 
+                 Login
+                </span>
+            </Link>
 
-            <button className="relative hover:text-emerald-600 transition">
+            {/* Wishlist */}
+            {/* <button className="relative hover:text-emerald-600 transition">
               <Heart size={20} />
               <span className="absolute -top-2 -right-2 bg-emerald-600 text-white text-xs px-1.5 rounded-full shadow">
                 3
               </span>
-            </button>
+            </button> */}
 
-            {/* SHOPPING BAG BUTTON (OPEN SIDEBAR) */}
+            {/* CART SIDEBAR */}
             <button
               className="relative hover:text-emerald-600 transition"
-              onClick={toggleCart}     // <-- OPEN CART SIDEBAR
+              onClick={toggleCart}
             >
               <ShoppingBag size={20} />
               <span className="absolute -top-2 -right-2 bg-emerald-600 text-white text-xs px-1.5 rounded-full shadow">
@@ -91,9 +113,9 @@ export default function Header() {
         </div>
 
         {/* NAVBAR */}
-        <nav className="bg-white ">
+        <nav className="bg-white">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-            
+
             {/* CATEGORY DROPDOWN */}
             <div className="relative inline-block">
               <button
@@ -101,10 +123,7 @@ export default function Header() {
                 className="flex items-center gap-2 font-medium text-gray-800 hover:text-emerald-600 transition"
               >
                 Shop By Category
-                <ChevronDown
-                  size={18}
-                  className={`${open ? "rotate-180" : ""} transition-transform`}
-                />
+                <ChevronDown size={18} className={`${open ? "rotate-180" : ""} transition-transform`} />
               </button>
 
               {open && (

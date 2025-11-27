@@ -7,6 +7,7 @@ import About from "./pages/About";
 import Faq from "./pages/Faq";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
+import Login from "./pages/Login";
 
 import Header from "./common/Header.jsx";
 import Footer from "./common/Footer.jsx";
@@ -37,7 +38,8 @@ const router = createBrowserRouter([
   {
     path: "/products/:id",
     element: <ProductDetails />,
-  }
+  },
+    { path: "/login", element: <Login /> },
 ]);
 
 export default function App() {
