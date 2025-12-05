@@ -1,400 +1,370 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 
-
+import hoodies from "../assets/hoodies.png";
+import whoodieone from "../assets/whoodieone.jpg";
 
 export default function Product() {
-
-
-
-
-
-  const SIDEBAR_IMG = "https://placehold.co/80x80?text=F"; // sidebar icon
-  // --- Helper lists ---
+  // ----------------------------------
+  // CONSTANTS
+  // ----------------------------------
+  const SIDEBAR_IMG = "https://placehold.co/80x80?text=F";
   const ALL_COLORS = ["Green", "Blue", "Red", "Brown", "Yellow", "White", "Black", "Pink"];
   const ALL_SIZES = ["XS", "Small", "Medium", "Large", "XL"];
 
-
   const baseProducts = [
-    {
-      id: 1,
-      name: "Men",
-      price: 79,
-      category: "Men",
-      image: "https://placehold.co/600x800?text=T-Shirt",
-     
-    },
-    {
-      id: 2,
-      name: "Women",
-      price: 39,
-      category: "Women",
-      image: "https://placehold.co/600x800?text=Hoodie",
-    
-    },
-    {
-      id: 3,
-      name: "Kids",
-      price: 119,
-      category: "Kids",
-      image: "https://placehold.co/600x800?text=T-Shirt",
-     
-    },
-    {
-      id: 4,
-      name: "Men",
-      price: 149,
-      category: "Accessories",
-      image: "https://placehold.co/1600x500?text=Shop+Collection",
-    
-    },
-    {
-      id: 5,
-      name: "Women",
-      price: 79,
-      category: "Women",
-      image: "https://placehold.co/600x800?text=T-Shirt",
-  
-    },
-    {
-      id: 6,
-      name: "Kids",
-      price: 39,
-      category: "Men",
-      image: "https://placehold.co/600x800?text=T-Shirt",
- 
-    },
-    {
-      id: 7,
-      name: "Accessories",
-      price: 119,
-      category: "Accessories",
-      image: "https://placehold.co/600x800?text=T-Shirt",
-     
-    },
-    {
-      id: 8,
-      name: "Accessories",
-      price: 149,
-      category: "Kids",
-      image: "https://placehold.co/600x800?text=T-Shirt",
-     
-    },
+    { id: 1, name: "Men", price: 79, category: "Men", image: hoodies },
+    { id: 2, name: "Women", price: 39, category: "Women", image: whoodieone },
+    { id: 3, name: "Kids", price: 119, category: "Kids", image: "https://placehold.co/600x800?text=T-Shirt" },
+    { id: 4, name: "Men", price: 149, category: "Accessories", image: "https://placehold.co/1600x500?text=Shop+Collection" },
+    { id: 5, name: "Women", price: 79, category: "Women", image: "https://placehold.co/600x800?text=T-Shirt" },
+    { id: 6, name: "Kids", price: 39, category: "Men", image: "https://placehold.co/600x800?text=T-Shirt" },
+    { id: 7, name: "Accessories", price: 119, category: "Accessories", image: "https://placehold.co/600x800?text=T-Shirt" },
+    { id: 8, name: "Accessories", price: 149, category: "Kids", image: "https://placehold.co/600x800?text=T-Shirt" }
   ];
 
-  // --- Map baseProducts into richer PRODUCTS used by the shop UI ---
-  const PRODUCTS = useMemo(() => {
-    return baseProducts.map((p, idx) => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      price: p.price,
-      oldPrice: Math.round(p.price * 1.25), // simple old price
-      rating: 50 + ((p.id * 13) % 160), // deterministic-ish rating
-      colors: p.category === "Shoes" ? ["White", "Black"] : ["Blue"], // simple mapping
-      sizes: p.category === "Hoodies" || p.category === "Jackets" ? ["Small", "Medium", "Large"] : [],
-      img: p.image,
-      offer: p.offer,
-      upcomingOffer: p.upcomingOffer,
-    }));
-  }, [baseProducts]);
+  // ----------------------------------
+  // PRODUCT MAPPING (clean + compact)
+  // ----------------------------------
+  const PRODUCTS = useMemo(
+    () =>
+      baseProducts.map((p) => ({
+        ...p,
+        oldPrice: Math.round(p.price * 1.25),
+        rating: 50 + ((p.id * 13) % 160),
+        colors: p.category === "Shoes" ? ["White", "Black"] : ["Blue"],
+        sizes:
+          p.category === "Hoodies" || p.category === "Jackets"
+            ? ["Small", "Medium", "Large"]
+            : []
+      })),
+    []
+  );
 
-  // --- UI state ---
+  // ----------------------------------
+  // URL CATEGORY SYNC
+  // ----------------------------------
   const location = useLocation();
+  const categoryFromURL = new URLSearchParams(location.search).get("category");
 
-// read category from query ?category=Men
-const urlParams = new URLSearchParams(location.search);
-const categoryFromURL = urlParams.get("category");
+  const [activeCategory, setActiveCategory] = useState(categoryFromURL || "All");
 
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [priceMin, setPriceMin] = useState("");
-  const [priceMax, setPriceMax] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(12);
-  const [sortBy, setSortBy] = useState("default");
-const [activeCategory, setActiveCategory] = useState(() => {
-  return categoryFromURL || "All";
-});
+  useEffect(() => {
+    if (categoryFromURL) setActiveCategory(categoryFromURL);
+  }, [categoryFromURL]);
 
-// UPDATE when URL changes
-useEffect(() => {
-  if (categoryFromURL) {
-    setActiveCategory(categoryFromURL);
-  }
-}, [categoryFromURL]);
-  // --- derive categories & counts from PRODUCTS ---
+  // ----------------------------------
+  // UI STATE
+  // ----------------------------------
+  const [filters, setFilters] = useState({
+    colors: [],
+    sizes: [],
+    min: "",
+    max: "",
+    search: "",
+    sort: "default"
+  });
+
+  const [visible, setVisible] = useState(12);
+  const gridRef = useRef(null);
+
+  const toggleValue = (key, value) =>
+    setFilters((f) => ({
+      ...f, [key]: f[key].includes(value) ? f[key].filter((v) => v !== value) : [...f[key], value]
+    }));
+
+  const resetFilters = () => {
+    setFilters({ colors: [], sizes: [], min: "", max: "", search: "", sort: "default" });
+    setActiveCategory("All");
+    setVisible(12);
+  };
+
+  // ----------------------------------
+  // CATEGORY LIST
+  // ----------------------------------
   const categories = useMemo(() => {
-    const counts = PRODUCTS.reduce((acc, p) => {
-      acc[p.category] = (acc[p.category] || 0) + 1;
-      return acc;
+    const counts = PRODUCTS.reduce((a, p) => {
+      a[p.category] = (a[p.category] || 0) + 1;
+      return a;
     }, {});
-    const list = [{ name: "All", count: PRODUCTS.length }];
-    Object.keys(counts)
-      .sort()
-      .forEach((cat) => list.push({ name: cat, count: counts[cat] }));
-    return list;
+    return [{ name: "All", count: PRODUCTS.length }, ...Object.entries(counts).map(([k, v]) => ({ name: k, count: v }))];
   }, [PRODUCTS]);
 
-  // --- toggle helpers ---
-  function toggleColor(color) {
-    setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
-    setVisibleCount(12);
-  }
-  function toggleSize(size) {
-    setSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]));
-    setVisibleCount(12);
-  }
-
-  // --- filter & sort logic ---
+  // ----------------------------------
+  // FILTERED + SORTED PRODUCTS
+  // ----------------------------------
   const filteredProducts = useMemo(() => {
-    let list = PRODUCTS.slice();
+    let list = [...PRODUCTS];
 
     if (activeCategory !== "All") list = list.filter((p) => p.category === activeCategory);
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+    if (filters.search.trim()) {
+      const q = filters.search.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q));
     }
 
-    const min = priceMin === "" ? Number.NEGATIVE_INFINITY : Number(priceMin);
-    const max = priceMax === "" ? Number.POSITIVE_INFINITY : Number(priceMax);
+    const min = filters.min ? Number(filters.min) : -Infinity;
+    const max = filters.max ? Number(filters.max) : Infinity;
     list = list.filter((p) => p.price >= min && p.price <= max);
 
-    if (selectedColors.length > 0) list = list.filter((p) => p.colors && p.colors.some((c) => selectedColors.includes(c)));
+    if (filters.colors.length)
+      list = list.filter((p) => p.colors?.some((c) => filters.colors.includes(c)));
 
-    if (selectedSizes.length > 0) list = list.filter((p) => p.sizes && p.sizes.some((s) => selectedSizes.includes(s)));
+    if (filters.sizes.length)
+      list = list.filter((p) => p.sizes?.some((s) => filters.sizes.includes(s)));
 
-    if (sortBy === "priceLow") list.sort((a, b) => a.price - b.price);
-    else if (sortBy === "priceHigh") list.sort((a, b) => b.price - a.price);
-    else if (sortBy === "rating") list.sort((a, b) => b.rating - a.rating);
-    else list.sort((a, b) => a.id - b.id);
+    switch (filters.sort) {
+      case "priceLow":
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case "priceHigh":
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        list.sort((a, b) => b.rating - a.rating);
+        break;
+      default:
+        list.sort((a, b) => a.id - b.id);
+    }
 
     return list;
-  }, [PRODUCTS, activeCategory, selectedColors, selectedSizes, priceMin, priceMax, searchQuery, sortBy]);
+  }, [PRODUCTS, activeCategory, filters]);
 
-  const visibleProducts = filteredProducts.slice(0, visibleCount);
+  const visibleProducts = filteredProducts.slice(0, visible);
 
-  // --- handlers ---
-  const gridRef = useRef(null);
-  function handleSelectCategory(cat) {
-    setActiveCategory(cat);
-    setVisibleCount(12);
-    if (gridRef.current) gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-  function handleApplyPrice(e) {
-    e && e.preventDefault && e.preventDefault();
-    setVisibleCount(12);
-  }
-  function handleLoadMore() {
-    setVisibleCount((v) => Math.min(v + 12, filteredProducts.length));
-  }
-  function handleClearFilters() {
-    setSelectedColors([]);
-    setSelectedSizes([]);
-    setPriceMin("");
-    setPriceMax("");
-    setSearchQuery("");
-    setActiveCategory("All");
-    setSortBy("default");
-    setVisibleCount(12);
-  }
+  // ----------------------------------
+  // SMALL SUBCOMPONENT
+  // ----------------------------------
+  const Stars = () => (
+    <div className="flex items-center gap-1 text-amber-400">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <FaStar key={i} size={14} />
+      ))}
+    </div>
+  );
 
-  // --- Stars component ---
-const Stars = ({ size = 14 }) => (
-  <div className="flex items-center gap-1 text-amber-400">
-    {Array.from({ length: 5 }).map((_, i) => (
-      <FaStar key={i} size={size} />
-    ))}
-  </div>
-);
-
+  // ----------------------------------
+  // RENDER
+  // ----------------------------------
   return (
     <div className="min-h-screen w-full">
-      <div className="w-full mx-auto">
-        <Header />
+      <Header />
 
-        <div className="grid lg:grid-cols-[320px_1fr] gap-6 bg-gradient-to-b from-slate-50 to-slate-100 py-10 px-4">
-          {/* Sidebar */}
-          <aside className="rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-md p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <img src={SIDEBAR_IMG} alt="icon" className="w-10 h-10 object-cover rounded-lg shadow-sm" />
-              <div>
-                <h3 className="text-lg font-semibold text-slate-800">Filters</h3>
-                <p className="text-xs text-slate-500">Narrow down results</p>
-              </div>
+      <div className="grid lg:grid-cols-[320px_1fr] gap-6 bg-gradient-to-b from-slate-50 to-slate-100 py-10 px-4">
+        {/* SIDEBAR */}
+        <aside className="rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-md p-5">
+          {/* SEARCH */}
+          <div className="flex items-center gap-3 mb-4">
+            <img src={SIDEBAR_IMG} className="w-10 h-10 rounded-lg shadow-sm" />
+            <div>
+              <h3 className="text-lg font-semibold">Filters</h3>
+              <p className="text-xs text-slate-500">Narrow down results</p>
             </div>
+          </div>
 
-            <div className="mb-4">
+          <input
+            placeholder="Search products..."
+            value={filters.search}
+            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
+            className="w-full rounded-xl border bg-white/60 py-2 px-3 text-sm mb-4"
+          />
+
+          {/* CATEGORIES */}
+          <Section title="Categories">
+            {categories.map((c) => (
+              <button
+                key={c.name}
+                onClick={() => {
+                  setActiveCategory(c.name);
+                  setVisible(12);
+                  gridRef.current?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${
+                  activeCategory === c.name ? "bg-amber-50 ring-1 ring-amber-200 text-amber-700" : "hover:bg-white/50"
+                }`}
+              >
+                <span>{c.name}</span>
+                <span className="text-xs text-slate-500">({c.count})</span>
+              </button>
+            ))}
+          </Section>
+
+          {/* PRICE */}
+          <Section title="Filter by Price">
+            <div className="grid grid-cols-2 gap-2">
               <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); setVisibleCount(12); }}
-                className="w-full rounded-xl border border-white/40 bg-white/60 placeholder:text-slate-400 py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-200"
+                placeholder="Min"
+                value={filters.min}
+                onChange={(e) => setFilters((f) => ({ ...f, min: e.target.value }))}
+                className="rounded-lg border bg-white/60 py-2 px-3 text-sm"
+              />
+              <input
+                placeholder="Max"
+                value={filters.max}
+                onChange={(e) => setFilters((f) => ({ ...f, max: e.target.value }))}
+                className="rounded-lg border bg-white/60 py-2 px-3 text-sm"
               />
             </div>
+          </Section>
 
-            <div className="mb-4 sm:shadow-sm">
-              <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-400 inline-block pb-1">
-  Categories
-</h3>
-              <ul className="space-y-2">
-                {categories.map((c) => (
-                  <li key={c.name}>
-                    <button
-                      onClick={() => handleSelectCategory(c.name)}
-                      className={`w-full flex items-center justify-between text-left px-3 py-2 rounded-lg transition ${activeCategory === c.name ? "bg-amber-50 ring-1 ring-amber-200 text-amber-700" : "hover:bg-white/50"}`}
-                    >
-                      <span className="font-medium text-sm">{c.name}</span>
-                      <span className="text-xs text-slate-500">({c.count})</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-4 sm:shadow-sm">
-             <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-400 inline-block pb-1">
-  Filter by Price
-</h3>
-              <form onSubmit={handleApplyPrice} className="space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <input className="rounded-lg border border-white/40 bg-white/60 py-2 px-3 text-sm" placeholder="Min" value={priceMin} onChange={(e) => setPriceMin(e.target.value)} />
-                  <input className="rounded-lg border border-white/40 bg-white/60 py-2 px-3 text-sm" placeholder="Max" value={priceMax} onChange={(e) => setPriceMax(e.target.value)} />
-                </div>
-                <div className="flex gap-2">
-                  <button type="submit" className="flex-1 rounded-lg py-2 text-sm font-semibold bg-amber-500 text-white shadow">Apply</button>
-                  <button type="button" onClick={() => { setPriceMin(""); setPriceMax(""); setVisibleCount(12); }} className="flex-1 rounded-lg py-2 text-sm border border-white/40 bg-white/60">Reset</button>
-                </div>
-              </form>
-            </div>
-
-            <div className="mb-4 sm:shadow-sm">
-         <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-200 inline-block pb-1">
-  Color
-</h3>
-              <ul className="grid grid-cols-2 gap-2">
-                {ALL_COLORS.map((color) => (
-                  <li key={color}>
-                    <label className="flex items-center gap-2 cursor-pointer select-none p-2 rounded-lg hover:bg-white/40">
-                      <input type="checkbox" checked={selectedColors.includes(color)} onChange={() => toggleColor(color)} className="h-4 w-4 rounded border-white/40 bg-white/60 text-amber-500 focus:ring-0" />
-                      <span className="flex-1 text-sm font-medium text-slate-700">{color}</span>
-                      <span className="text-xs text-slate-500">({PRODUCTS.filter(p => p.colors && p.colors.includes(color)).length})</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-4 sm:shadow-sm">
-    <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-200 inline-block pb-1">
-  Size
-</h3>
-              <ul className="grid grid-cols-3 gap-2">
-                {ALL_SIZES.map((size) => (
-                  <li key={size}>
-                    <label className="flex items-center gap-2 cursor-pointer select-none p-2 rounded-lg hover:bg-white/40">
-                      <input type="checkbox" checked={selectedSizes.includes(size)} onChange={() => toggleSize(size)} className="h-4 w-4 rounded border-white/40 bg-white/60 text-amber-500 focus:ring-0" />
-                      <span className="flex-1 text-sm font-medium text-slate-700">{size}</span>
-                      <span className="text-xs text-slate-500">({PRODUCTS.filter(p => p.sizes && p.sizes.includes(size)).length})</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-3">
-              <button onClick={handleClearFilters} className="w-full rounded-xl py-2 text-sm font-semibold bg-white/70 border border-white/40">Clear all filters</button>
-            </div>
-          </aside>
-
-          {/* MAIN */}
-          <main className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-800">{activeCategory === "All" ? "All Products" : activeCategory}</h2>
-                <p className="text-sm text-slate-500">Showing <span className="font-medium text-slate-700">{Math.min(visibleCount, filteredProducts.length)}</span> of <span className="font-medium text-slate-700">{filteredProducts.length}</span> items</p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-slate-500">Sort by</label>
-                <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setVisibleCount(12); }} className="rounded-xl border border-white/40 bg-white/60 py-2 px-3 text-sm">
-                  <option value="default">Default</option>
-                  <option value="priceLow">Price: Low to High</option>
-                  <option value="priceHigh">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Product grid */}
-            <div ref={gridRef} id="product-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visibleProducts.map((p) => (
-                <article key={p.id} className="flex flex-col rounded-2xl bg-white/60 backdrop-blur-sm border border-white/30 shadow-inner hover:shadow-lg transition overflow-hidden">
-                  <Link to={`/products/${p.id}`} className="relative block">
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-white/60 to-white/40 flex items-center justify-center">
-                      <img src={p.img} alt={p.name} className="object-contain max-h-full max-w-full" />
-                    </div>
-                    {p.oldPrice - p.price >= 30 && (
-                      <div className="absolute top-3 left-3 bg-amber-100 text-amber-700 px-2 py-1 rounded-lg text-xs font-semibold">Sale</div>
-                    )}
-                  </Link>
-
-                  <div className="p-4 flex flex-col flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-md font-semibold text-slate-800">{p.name}</h3>
-                    </div>
-
-                    <div className="mt-3 flex items-center gap-3">
-                      <Stars />
-                      <span className="text-sm text-slate-500">{p.rating}</span>
-                    </div>
-
-                    <div className="mt-4 flex items-center gap-3">
-                      <div className="text-lg font-extrabold text-slate-800">${p.price.toFixed(2)}</div>
-                      <div className="text-sm text-slate-500 line-through">${p.oldPrice.toFixed(2)}</div>
-                    </div>
-
-                    <div className="mt-3 text-sm text-slate-600 space-y-1">
-                      <div><span className="font-medium text-slate-700">Category:</span> {p.category}</div>
-                      {p.colors && p.colors.length > 0 && <div><span className="font-medium text-slate-700">Colors:</span> {p.colors.join(", ")}</div>}
-                      {p.sizes && p.sizes.length > 0 && <div><span className="font-medium text-slate-700">Sizes:</span> {p.sizes.join(", ")}</div>}
-                                                            
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-white/30">
-                      {/* View Details Link - redirects to ProductDetails.jsx route */}
-                      <Link to={`/products/${p.id}`} className="block mt-2 py-2.5 px-6 rounded-xl font-semibold bg-amber-400 text-white transition-all duration-400 hover:bg-yellow-300 hover:shadow-lg hover:-translate-y-1 text-center">
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </article>
+          {/* COLORS */}
+          <Section title="Color">
+            <div className="grid grid-cols-2 gap-2">
+              {ALL_COLORS.map((c) => (
+                <label key={c} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/40">
+                  <input
+                    type="checkbox"
+                    checked={filters.colors.includes(c)}
+                    onChange={() => toggleValue("colors", c)}
+                  />
+                  <span className="flex-1 text-sm">{c}</span>
+                  <span className="text-xs text-slate-500">
+                    ({PRODUCTS.filter((p) => p.colors.includes(c)).length})
+                  </span>
+                </label>
               ))}
             </div>
+          </Section>
 
-            {/* Load more / no results */}
-            <div className="flex justify-center">
-              {filteredProducts.length === 0 ? (
-                <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 p-6 text-center text-slate-600">No products match your filters.</div>
-              ) : visibleCount < filteredProducts.length ? (
-                <button onClick={handleLoadMore} className="rounded-xl py-2 px-6 bg-white/60 border border-white/30 shadow hover:shadow-md">Load More</button>
-              ) : null}
+          {/* SIZES */}
+          <Section title="Size">
+            <div className="grid grid-cols-3 gap-2">
+              {ALL_SIZES.map((s) => (
+                <label key={s} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/40">
+                  <input type="checkbox" checked={filters.sizes.includes(s)} onChange={() => toggleValue("sizes", s)} />
+                  <span className="flex-1 text-sm">{s}</span>
+                  <span className="text-xs text-slate-500">
+                    ({PRODUCTS.filter((p) => p.sizes.includes(s)).length})
+                  </span>
+                </label>
+              ))}
             </div>
-          </main>
-        </div>
+          </Section>
+
+          <button onClick={resetFilters} className="mt-3 w-full rounded-xl py-2 text-sm bg-white/70 border">
+            Clear all filters
+          </button>
+        </aside>
+
+        {/* MAIN */}
+        <main className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold">{activeCategory === "All" ? "All Products" : activeCategory}</h2>
+              <p className="text-sm text-slate-500">
+                Showing <span>{Math.min(visible, filteredProducts.length)}</span> of{" "}
+                <span>{filteredProducts.length}</span> items
+              </p>
+            </div>
+
+            <select
+              value={filters.sort}
+              onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}
+              className="rounded-xl border bg-white/60 py-2 px-3 text-sm"
+            >
+              <option value="default">Default</option>
+              <option value="priceLow">Price: Low to High</option>
+              <option value="priceHigh">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+
+          {/* PRODUCT GRID */}
+          <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {visibleProducts.map((p) => (
+              <article
+                key={p.id}
+                className="flex flex-col rounded-2xl bg-white/60 backdrop-blur-sm border shadow-inner hover:shadow-lg transition"
+              >
+                <Link to={`/products/${p.id}`} className="relative">
+                  <div className="aspect-[4/3] w-full bg-white/40 flex items-center justify-center">
+                    <img src={p.image || p.img} className="object-contain max-h-full" />
+                  </div>
+                  {p.oldPrice - p.price >= 30 && (
+                    <div className="absolute top-3 left-3 bg-amber-100 text-amber-700 px-2 py-1 rounded-lg text-xs font-semibold">
+                      Sale
+                    </div>
+                  )}
+                </Link>
+
+                <div className="p-4 flex flex-col flex-1">
+                  <h3 className="text-md font-semibold">{p.name}</h3>
+
+                  <div className="mt-3 flex items-center gap-3">
+                    <Stars />
+                    <span className="text-sm text-slate-500">{p.rating}</span>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="text-lg font-extrabold">${p.price.toFixed(2)}</div>
+                    <div className="text-sm text-slate-500 line-through">${p.oldPrice.toFixed(2)}</div>
+                  </div>
+
+                  <div className="mt-3 text-sm space-y-1">
+                    <div>
+                      <span className="font-medium">Category:</span> {p.category}
+                    </div>
+                    {p.colors?.length > 0 && (
+                      <div>
+                        <span className="font-medium">Colors:</span> {p.colors.join(", ")}
+                      </div>
+                    )}
+                    {p.sizes?.length > 0 && (
+                      <div>
+                        <span className="font-medium">Sizes:</span> {p.sizes.join(", ")}
+                      </div>
+                    )}
+                  </div>
+
+                  <Link
+                    to={`/products/${p.id}`}
+                    className="block mt-4 py-2.5 px-6 rounded-xl font-semibold bg-amber-400 text-white hover:bg-yellow-300 hover:shadow-lg hover:-translate-y-1 text-center transition"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* LOAD MORE */}
+          <div className="flex justify-center">
+            {filteredProducts.length === 0 ? (
+              <div className="rounded-2xl bg-white/60 p-6 text-center text-slate-600">
+                No products match your filters.
+              </div>
+            ) : visible < filteredProducts.length ? (
+              <button
+                onClick={() => setVisible((v) => v + 12)}
+                className="rounded-xl py-2 px-6 bg-white/60 border shadow hover:shadow-md"
+              >
+                Load More
+              </button>
+            ) : null}
+          </div>
+        </main>
       </div>
 
       <Footer />
     </div>
   );
 }
+
+// ----------------------------------
+// SHARED SECTION COMPONENT
+// ----------------------------------
+function Section({ title, children }) {
+  return (
+    <div className="mb-4">
+      <h3 className="font-semibold text-lg mb-3 border-b-4 border-yellow-400 pb-1 inline-block">{title}</h3>
+      <div>{children}</div>
+    </div>
+  );
+}
+
 
 
 // import React from 'react';

@@ -39,8 +39,16 @@ const router = createBrowserRouter([
     path: "/products/:id",
     element: <ProductDetails />,
   },
-    { path: "/login", element: <Login /> },
+  // {
+  //   path: "/trending/:id",
+  //   element: <TrendingDetails />,   // ⬅ ADD THIS
+  // },
+  { 
+    path: "/login", 
+    element: <Login /> 
+  },
 ]);
+
 
 export default function App() {
   return (

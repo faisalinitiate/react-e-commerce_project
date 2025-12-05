@@ -1,37 +1,42 @@
+// Header.jsx
 import React, { useState } from "react";
-import { ChevronDown, Heart, ShoppingBag, User, RefreshCcw, Scale } from "lucide-react";
-import { FaShoppingBag } from 'react-icons/fa';
-import { Link } from "react-router-dom";       //  <-- ADD THIS
+import { ChevronDown, ShoppingBag, User, RefreshCcw } from "lucide-react";
+import { FaShoppingBag } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 import { Usecart } from "./UseCart";
-import { useNavigate } from "react-router-dom";
 
 const menuLinks = [
-  { id: 1, name: 'Home', link: '/' },
-  { id: 2, name: 'Products', link: '/products' },
-  { id: 3, name: 'Faq', link: '/faq' },
-  { id: 4, name: 'About', link: '/about' },
-  { id: 5, name: 'Contact', link: '/contact' }
+  { id: 1, name: "Home", link: "/" },
+  { id: 2, name: "Products", link: "/products" },
+  { id: 3, name: "Faq", link: "/faq" },
+  { id: 4, name: "About", link: "/about" },
+  { id: 5, name: "Contact", link: "/contact" },
 ];
-
 
 export default function Header() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { cartCount, toggleCart } = Usecart();
-  
-  function handleCategorySelect(e) {
+
+  const categories = [
+    "Feature Product",
+    "Best Sellers",
+    "Offers On Sale"
+  ];
+
+  const handleCategoryClick = (cat) => {
+    navigate(`/?section=${encodeURIComponent(cat)}`);
+    setOpen(false);
+  };
+
+  const handleCategorySelect = (e) => {
     const value = e.target.value;
     if (value === "All Category") {
       navigate("/products");
     } else {
       navigate(`/products?category=${value}`);
     }
-  }
-  const categories = [
-    "Feature Product","Perfume & Cologne","Best Sellers","Men Fashion",
-    "Bags & Shoes","Women Fashion","Kids & Baby","Men's Clothing",
-    "On Sale","Accessories",
-  ];
+  };
 
   return (
     <>
@@ -50,15 +55,14 @@ export default function Header() {
           <div className="flex-1 mx-8 max-w-3xl">
             <div className="flex items-center bg-amber-50 border border-amber-200 rounded-full shadow-inner overflow-hidden">
               <select
-  onChange={handleCategorySelect}
-  className="bg-transparent px-4 py-3 text-gray-700 border-r outline-none cursor-pointer"
->
-  <option>All Category</option>
-  <option>Men</option>
-  <option>Women</option>
-  <option>Kids</option>
-</select>
-
+                onChange={handleCategorySelect}
+                className="bg-transparent px-4 py-3 text-gray-700 border-r outline-none cursor-pointer"
+              >
+                <option>All Category</option>
+                <option>Men</option>
+                <option>Women</option>
+                <option>Kids</option>
+              </select>
 
               <input
                 className="flex-1 px-4 py-3 bg-transparent outline-none text-gray-700"
@@ -74,31 +78,16 @@ export default function Header() {
           {/* ACTIONS */}
           <div className="flex items-center gap-6 text-gray-700">
 
-            {/* Compare */}
-            {/* <button className="flex items-center gap-2 hover:text-emerald-600 transition">
-              <Scale size={18} /> <span>Compare</span>
-            </button> */}
-
-            {/* LOGIN → FIXED */}
+            {/* LOGIN */}
             <Link
               to="/login"
               className="flex items-center gap-2 hover:text-emerald-600 transition"
             >
               <User size={18} />
-              <span> 
-                 Login
-                </span>
+              <span>Login</span>
             </Link>
 
-            {/* Wishlist */}
-            {/* <button className="relative hover:text-emerald-600 transition">
-              <Heart size={20} />
-              <span className="absolute -top-2 -right-2 bg-emerald-600 text-white text-xs px-1.5 rounded-full shadow">
-                3
-              </span>
-            </button> */}
-
-            {/* CART SIDEBAR */}
+            {/* CART */}
             <button
               className="relative hover:text-emerald-600 transition"
               onClick={toggleCart}
@@ -108,7 +97,6 @@ export default function Header() {
                 {cartCount}
               </span>
             </button>
-
           </div>
         </div>
 
@@ -132,6 +120,7 @@ export default function Header() {
                     {categories.map((cat, index) => (
                       <li
                         key={index}
+                        onClick={() => handleCategoryClick(cat)}
                         className="px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition rounded"
                       >
                         {cat}
@@ -146,7 +135,10 @@ export default function Header() {
             <ul className="hidden lg:flex items-center gap-6">
               {menuLinks.map((item) => (
                 <li key={item.id}>
-                  <a className="text-gray-600 hover:text-blue-600 transition font-medium" href={item.link}>
+                  <a
+                    className="text-gray-600 hover:text-blue-600 transition font-medium"
+                    href={item.link}
+                  >
                     {item.name}
                   </a>
                 </li>

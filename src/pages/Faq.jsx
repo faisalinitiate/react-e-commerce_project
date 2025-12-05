@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import slidertwo from "../assets/slidertwo.jpg";
+import faqimgone from "../assets/faqimgone.jpg";
 import { FaChevronDown } from "react-icons/fa";
+import Login from "../pages/Login";
+import { Link } from "react-router-dom";
 
 const faqList = [
   {
@@ -42,12 +44,12 @@ export default function Purchase() {
       {/* HERO SECTION */}
           {/* Banner */}
          <div
-              className="relative  h-68 pt-3"
+              className="relative  h-68 pt-3 mt-8"
               style={{
               
-                  backgroundImage: `url(${slidertwo})`,
+                  backgroundImage: `url(${faqimgone})`,
                   backgroundPosition: "center",
-                  backgroundSize: "auto",
+                  backgroundSize: "cover",
                   backgroundRepeat: "no-repeat"
           
          
@@ -99,7 +101,10 @@ export default function Purchase() {
             Contact our support team and we'll get back to you within 24 hours.
           </p>
           <button className="mt-5 px-6 py-3 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition font-medium">
-            Contact Support
+            <Link to = "/login">
+            <span>  Contact Support</span>
+            </Link>
+          
           </button>
         </div>
       </main>

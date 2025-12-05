@@ -290,16 +290,21 @@
 
 
 
+// Home.jsx
+import React, { useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
 import Header from "../common/Header";
 import Footer from "../common/Footer";
+
 import casualwear from "../assets/casualwear.jpg";
 import newsale from "../assets/newsale.jpg";
-import bannerone from  "../assets/bannerone.jpg";
-import bannertwo from  "../assets/bannertwo.jpg";
-import bannerthree from  "../assets/bannerthree.jpg";
+import bannerone from "../assets/bannerone.jpg";
+import bannertwo from "../assets/bannertwo.jpg";
+import bannerthree from "../assets/bannerthree.jpg";
+
 import bag from "../assets/bag.jpg";
 import jeans from "../assets/jeans.jpg";
 import perfume from "../assets/perfume.jpg";
@@ -307,33 +312,23 @@ import cosmetics from "../assets/cosmetics.jpg";
 import sneakers from "../assets/sneakers.jpg";
 import skincare from "../assets/skincare.jpg";
 
+import  wireless from "../assets/wireless.png";
+import bluebag from "../assets/bluebag.jpg"
+
+import { useLocation } from "react-router-dom";
 import { Star } from "lucide-react";
 import { FaClock, FaShippingFast, FaHeadset, FaTag } from "react-icons/fa";
 import "../index.css";
 
 
+// ================= HERO SLIDER =======================
 const slides = [
-    {
-      id: 1,
-      img: bannerone,
-      title: "Premium Fashion Collection",
-      subtitle: "Explore the latest arrivals",
-    },
-    {
-      id: 2,
-      img: bannertwo,
-      title: "Modern Trends",
-      subtitle: "Style that makes you confident",
-    },
-    {
-      id: 3,
-      img: bannerthree,
-      title: "Season Sale",
-      subtitle: "Up to 50% off on selected items",
-    }
-  ];
+  { id: 1, img: bannerone, title: "Premium Fashion Collection", subtitle: "Explore the latest arrivals" },
+  { id: 2, img: bannertwo, title: "Modern Trends", subtitle: "Style that makes you confident" },
+  { id: 3, img: bannerthree, title: "Season Sale", subtitle: "Up to 50% off on selected items" }
+];
 
-export  function HeroSlider() {
+export function HeroSlider() {
   const settings = {
     dots: true,
     infinite: true,
@@ -347,28 +342,18 @@ export  function HeroSlider() {
     cssEase: "ease-in-out",
   };
 
-  
-
   return (
     <div className="w-full relative overflow-hidden my-10">
       <Slider {...settings}>
         {slides.map((slide) => (
           <div key={slide.id} className="relative w-full h-[80vh]">
-            <img
-              src={slide.img}
-              alt={slide.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={slide.img} alt={slide.title} className="w-full h-full object-cover" />
 
-            {/* CONTENT OVERLAY */}
+            {/* TEXT OVERLAY */}
             <div className="absolute inset-0 bg-black/40 flex items-center">
               <div className="max-w-6xl mx-auto px-6">
-                <h2 className="text-white text-4xl md:text-6xl font-bold drop-shadow-lg">
-                  {slide.title}
-                </h2>
-                <p className="text-white text-lg md:text-2xl mt-3 drop-shadow-md">
-                  {slide.subtitle}
-                </p>
+                <h2 className="text-white text-4xl md:text-6xl font-bold drop-shadow-lg">{slide.title}</h2>
+                <p className="text-white text-lg md:text-2xl mt-3 drop-shadow-md">{slide.subtitle}</p>
               </div>
             </div>
           </div>
@@ -380,173 +365,192 @@ export  function HeroSlider() {
 
 
 
-// Optimized Hero Slider component
-
-
+// ================= FULL HOME PAGE ======================
 export default function Home() {
+  const location = useLocation();
+
+  // *** REFS for smooth scrolling based on Header clicks ***
+  const featureRef = useRef(null);
+  const bestRef = useRef(null);
+  const offerRef = useRef(null);
+
+  // Listen to URL changes → scroll to correct section
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+
+    if (!section) return;
+
+    if (section === "Feature Product") featureRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (section === "Best Sellers") bestRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (section === "Offers On Sale") offerRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  }, [location.search]);
+
+
+
+
   const categories = [
     { name: "Jeans", img: jeans },
     { name: "Perfume", img: perfume },
-    { name: "Sneakers", img: sneakers},
+    { name: "Sneakers", img: sneakers },
     { name: "Cosmetics", img: cosmetics },
     { name: "Bags", img: bag },
     { name: "Skin Care", img: skincare }
-    // { name: "Skin Care", img: "/assets/images/featured-categorie/7.png" },
-    // { name: "Jewelry", img: "/assets/images/featured-categorie/8.png" },
   ];
-  const ITEMS = [
-  { title: "Wireless Headphones", price: 120, old: 200, tag: "New", reviews: 130 },
-  { title: "Blue Bag with Lock", price: 160, old: 180, tag: "Sale", reviews: 120 },
-  { title: "Stylish Pink Top", price: 150, old: 200, tag: "New", reviews: 150 },
-  { title: "Brown Com Boots", price: 120, old: 150, tag: "Sale", reviews: 120 },
-  { title: "Winter Sweater", price: 110, old: 130, tag: "New", reviews: 160 },
-  { title: "Blue Kids Shoes", price: 180, old: 200, tag: "Sale", reviews: 130 },
-  { title: "Stylish Bag", price: 170, old: 200, tag: "New", reviews: 120 },
-  { title: "Finger Rings", price: 100, old: 130, tag: "Sale", reviews: 120 }
-];
 
-function Stars({ value }) {
-  return (
-    <div className="flex items-center text-yellow-500 text-sm">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i}>{i < Math.round(value) ? "★" : "☆"}</span>
-      ))}
-    </div>
-  );
-}
+  const ITEMS = [
+    { title: "Wireless Headphones", img: wireless, price: 120, old: 200, tag: "New", reviews: 130 },
+    { title: "Blue Bag with Lock",img: bluebag, price: 160, old: 180, tag: "Sale", reviews: 120 },
+    { title: "Stylish Pink Top", img: wireless, price: 150, old: 200, tag: "New", reviews: 150 },
+    { title: "Brown Com Boots", img: bluebag, price: 120, old: 150, tag: "Sale", reviews: 120 },
+    { title: "Winter Sweater", img: wireless, price: 110, old: 130, tag: "New", reviews: 160 },
+    { title: "Blue Kids Shoes",img: bluebag, price: 180, old: 200, tag: "Sale", reviews: 130 },
+    { title: "Stylish Bag", img: wireless, price: 170, old: 200, tag: "New", reviews: 120 },
+    { title: "Finger Rings",img: bluebag, price: 100, old: 130, tag: "Sale", reviews: 120 }
+  ];
+
+  function Stars({ value }) {
+    return (
+      <div className="flex items-center text-yellow-500 text-sm">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span key={i}>{i < Math.round(value) ? "★" : "☆"}</span>
+        ))}
+      </div>
+    );
+  }
+
+
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Header />
 
-      {/* ===== Optimized HERO SLIDER ===== */}
-      <HeroSlider slides={HeroSlider} />
 
-      {/* ===== FEATURED PRODUCTS (Exclusive Design) ===== */}
+      {/* HERO */}
+      <HeroSlider />
 
-<section className="container mx-auto mt-10 px-4 py-10">
-      {/* ======================= FEATURED CATEGORIES ======================= */}
-      <h2 className="text-2xl font-semibold mb-6">Featured Categories</h2>
 
-      <div className="grid grid-cols-4 md:grid-cols-6 gap-10">
-        {categories.map((cat, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center font-bold bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition"
-          >
-            <img
-              src={cat.img}
-              alt={cat.name}
-              className="size-38 object-contain mb-2"
-            />
-            <span className="text-sm text-gray-800">{cat.name}</span>
+      {/* ======================================== */}
+      {/*        FEATURE PRODUCT (SECTION 1)       */}
+      {/* ======================================== */}
+      <section ref={featureRef} className="container mx-auto mt-10 px-4 py-10">
+        <h2 className="text-2xl font-semibold mb-6">Featured Categories</h2>
+
+        <div className="grid grid-cols-4 md:grid-cols-6 gap-10">
+          {categories.map((cat, index) => (
+            <div key={index} className="flex flex-col items-center font-bold bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
+              <img src={cat.img} alt={cat.name} className="size-38 object-contain mb-2" />
+              <span className="text-sm text-gray-800">{cat.name}</span>
+            </div>
+          ))}
+        </div>
+
+
+
+
+        {/* ======================================== */}
+        {/*        EXCITING OFFERS (SECTION 2)       */}
+        {/* ======================================== */}
+        <section ref={bestRef}>
+          <h2 className="text-2xl font-semibold mt-12 mb-6">Exciting Offers</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* LEFT */}
+            <div
+              className="relative rounded-xl overflow-hidden bg-cover bg-center flex items-center justify-center"
+              style={{ backgroundImage: `url(${casualwear})` }}
+            >
+              <div className="bg-black/20 absolute inset-0"></div>
+
+              <div className="relative p-8 text-white max-w-sm text-center">
+                <h3 className="text-3xl font-bold mb-2">Stylish Coat</h3>
+
+                <div className="text-2xl font-bold text-green-300">
+                  $80 <span className="line-through text-gray-200 text-lg ml-2">$150</span>
+                </div>
+
+                {/* Timer */}
+                <div className="flex justify-center gap-3 mt-5">
+                  {["Days", "Hours", "Mins", "Secs"].map((label, i) => (
+                    <div key={i} className="text-center border border-white/50 rounded-md px-3 py-2">
+                      <div className="text-xl font-bold">00</div>
+                      <div className="text-xs">{label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="mt-6 bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+                 
+                </button>
+              </div>
+            </div>
+
+
+            {/* RIGHT */}
+            <div
+              className="relative rounded-xl overflow-hidden bg-cover bg-center flex items-center justify-center"
+              style={{ backgroundImage: `url(${newsale})` }}
+            >
+              <div className="bg-black/20 absolute inset-0"></div>
+
+              <div className="relative p-8 text-white max-w-sm text-center">
+                <h3 className="text-4xl font-bold mb-2">New Year Sale</h3>
+                <p className="text-xl font-medium mb-4">Up To 70% Off</p>
+
+                <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md">
+                 
+                </button>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* ======================= EXCITING OFFERS ======================= */}
-      <section>
-<h2 className="text-2xl font-semibold mt-12 mb-6">Exciting Offers</h2>
+        </section>
+      </section>
 
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-{/* LEFT CARD — Stylish Coat */}
-<div
-className="relative rounded-xl overflow-hidden bg-cover bg-center flex items-center justify-center"
-style={{ backgroundImage: `url(${casualwear})` }}
->
-<div className="bg-black/20 absolute inset-0"></div>
 
 
-<div className="relative p-8 text-white max-w-sm text-center">
-<h3 className="text-3xl font-bold mb-2">Stylish Coat</h3>
+      {/* ======================================== */}
+      {/*       TRENDING PRODUCTS (SECTION 3)      */}
+      {/* ======================================== */}
+      <section ref={offerRef}>
+        <h1 className="text-3xl font-semibold sm:ml-32 mt-12 mb-6">Trending Products</h1>
+
+        <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {ITEMS.map((item, i) => (
+            <div key={i} className="bg-white border rounded-lg shadow p-4 flex flex-col items-center text-center">
+
+              <div className="relative w-68 h-28 flex items-center justify-center overflow-hidden">
+                <img src={item.img} alt={item.title} className="object-cover h-full" />
+                <span className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-semibold text-white ${item.tag === "New" ? "bg-green-500" : "bg-yellow-500"}`}>
+                  {item.tag}
+                </span>
+              </div>
+
+              <h3 className="mt-4 text-sm font-semibold text-gray-800">{item.title}</h3>
+
+              <div className="mt-2">
+                <span className="block font-bold text-gray-900">${item.price.toFixed(2)}</span>
+                <span className="text-xs line-through text-gray-400">${item.old.toFixed(2)}</span>
+              </div>
+
+              <div className="flex items-center justify-center space-x-2 mt-3">
+                <Stars value={4} />
+                <span className="text-xs text-gray-500">{item.reviews}</span>
+              </div>
+
+              <button className="mt-4 w-full border border-gray-300 rounded py-2 text-sm hover:bg-gray-100">
+                Shop Now
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </section>
 
 
-<div className="text-2xl font-bold text-green-300">
-$80 <span className="line-through text-gray-200 text-lg ml-2">$150</span>
-</div>
-
-
-{/* Countdown */}
-<div className="flex justify-center gap-3 mt-5">
-{["Days", "Hours", "Mins", "Secs"].map((label, i) => (
-<div
-key={i}
-className="text-center border border-white/50 rounded-md px-3 py-2"
->
-<div className="text-xl font-bold">00</div>
-<div className="text-xs">{label}</div>
-</div>
-))}
-</div>
-
-
-<button className="mt-6 bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
-Shop Now
-</button>
-</div>
-</div>
-
-
-{/* RIGHT CARD — New Year Sale */}
-<div
-className="relative rounded-xl overflow-hidden bg-cover bg-center flex items-center justify-center"
-style={{ backgroundImage: `url(${newsale})` }}
->
-<div className="bg-black/20 absolute inset-0"></div>
-
-
-<div className="relative p-8 text-white max-w-sm text-center">
-<h3 className="text-4xl font-bold mb-2">New Year Sale</h3>
-<p className="text-xl font-medium mb-4">Up To 70% Off</p>
-
-
-<button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md">
-Shop Now
-</button>
-</div>
-</div>
-</div>
-</section>
-    </section>
-
-{/* ***Product Grid*** */}
-  <h1 className="text-3xl font-semibold ml-12 mt-12 mb-6">Trending Products</h1>
-<div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
- 
-  {ITEMS.map((item, i) => (
-    <div key={i} className="bg-white border rounded-lg shadow p-4 flex flex-col items-center text-center">
-     
-      <div className="relative w-68 h-28 flex items-center justify-center overflow-hidden">
-        <img src={"../assets/wintersweater.jpg"} alt={item.title} className="object-cover h-full" />
-        <span
-          className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-semibold text-white ${
-            item.tag === "New" ? "bg-green-500" : "bg-yellow-500"
-          }`}
-        >
-          {item.tag}
-        </span>
-      </div>
-
-      <h3 className="mt-4 text-sm font-semibold text-gray-800">{item.title}</h3>
-
-      <div className="mt-2">
-        <span className="block font-bold text-gray-900">${item.price.toFixed(2)}</span>
-        <span className="text-xs line-through text-gray-400">${item.old.toFixed(2)}</span>
-      </div>
-
-      <div className="flex items-center justify-center space-x-2 mt-3">
-        <Stars value={4} />
-        <span className="text-xs text-gray-500">{item.reviews}</span>
-      </div>
-
-      <button className="mt-4 w-full border border-gray-300 rounded py-2 text-sm hover:bg-gray-100">
-        Shop Now
-      </button>
-    </div>
-  ))}
-</div>
-
-  
 
       <Footer />
     </div>

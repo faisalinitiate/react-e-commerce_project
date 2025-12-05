@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { Usecart } from "../common/Usecart";
+
 import hoodies from "../assets/hoodies.png";
 import hoodiesone from "../assets/hoodiesone.jpg";
 import hoodiestwo from "../assets/hoodiestwo.jpg";
@@ -12,14 +13,23 @@ import hoodiesfour from "../assets/hoodiesthree.jpg";
 import hoodiesfive from "../assets/hoodiesfive.png";
 import hoodiessix from "../assets/hoodiessix.png";
 
-// ✅ Detailed product data + display logic
+
+import whoodieone from "../assets/whoodieone.jpg";
+import whoodietwo from "../assets/whoodietwo.jpg";
+import whoodithree from "../assets/whoodiethree.jpg";
+import whoodiefour from "../assets/whoodiefour.jpg";
+import whoodiefive from "../assets/whoodiefive.jpg";
 export default function ProductDetails() {
   const { id } = useParams();
+  const { addToCart } = Usecart();
 
+  // -----------------------------------------
+  // PRODUCT DATA
+  // -----------------------------------------
   const products = [
     {
       id: 1,
-      title: "Urban Hoodie",
+      title: "Men's Hoodie",
       originalPrice: 99,
       discountedPrice: 79,
       rating: 4,
@@ -32,13 +42,12 @@ export default function ProductDetails() {
       tags: ["Winter", "Comfort", "Casual"],
       sizes: ["S", "M", "L", "XL"],
       images: [
-        hoodiesone,  
+        hoodiesone,
         hoodiestwo,
         hoodiesthree,
-           hoodiesfour,
-              hoodiesfive,
-                 hoodiessix,
-     
+        hoodiesfour,
+        hoodiesfive,
+        hoodiessix,
       ],
       mainImage: hoodies,
       bottomBanner: "https://placehold.co/1200x400?text=Urban+Hoodie+Banner",
@@ -68,9 +77,11 @@ export default function ProductDetails() {
         },
       ],
     },
+
+    // PRODUCT 2 ---------------------------------------
     {
       id: 2,
-      title: "Summer Tee",
+      title: "Women's Hoodie",
       originalPrice: 49,
       discountedPrice: 39,
       rating: 5,
@@ -82,14 +93,12 @@ export default function ProductDetails() {
       tags: ["Casual", "Summer", "Organic Cotton"],
       sizes: ["S", "M", "L", "XL"],
       images: [
-        "https://placehold.co/100x150?text=Tee+1",
-        "https://placehold.co/100x150?text=Tee+2",
-        "https://placehold.co/100x150?text=Tee+1",
-        "https://placehold.co/100x150?text=Tee+2",
-        "https://placehold.co/100x150?text=Tee+1",
-        
+whoodietwo,
+whoodithree,
+whoodiefour,
+whoodiefive,
       ],
-      mainImage: "https://placehold.co/600x800?text=Summer+Tee",
+      mainImage: whoodieone,
       bottomBanner: "https://placehold.co/1200x400?text=Summer+Tee+Banner",
       specs: [
         { label: "Material", value: "100% Organic Cotton" },
@@ -107,6 +116,8 @@ export default function ProductDetails() {
         },
       ],
     },
+
+    // PRODUCT 3 ---------------------------------------
     {
       id: 3,
       title: "Denim Jacket",
@@ -127,7 +138,6 @@ export default function ProductDetails() {
         "https://placehold.co/100x150?text=Jacket+1",
         "https://placehold.co/100x150?text=Jacket+2",
         "https://placehold.co/100x150?text=Jacket+1",
-     
       ],
       mainImage: "https://placehold.co/600x800?text=Denim+Jacket",
       bottomBanner: "https://placehold.co/1200x400?text=Denim+Jacket+Banner",
@@ -146,6 +156,8 @@ export default function ProductDetails() {
         },
       ],
     },
+
+    // PRODUCT 4 ---------------------------------------
     {
       id: 4,
       title: "Street Sneakers",
@@ -153,7 +165,88 @@ export default function ProductDetails() {
       discountedPrice: 149,
       rating: 5,
       reviewsCount: 152,
-      shortDescription: "Trendy sneakers with cushioned soles and sleek design.",
+      shortDescription:
+        "Trendy sneakers with cushioned soles and sleek design.",
+      longDescription:
+        "Built for both performance and fashion, Street Sneakers provide excellent grip and cushioning. Designed with breathable mesh for all-day comfort.",
+      category: ["Men", "Shoes"],
+      tags: ["Sneakers", "Streetwear", "Comfort"],
+      sizes: ["40", "41", "42", "43"],
+      images: [
+        "https://placehold.co/100x150?text=Sneakers+1",
+        "https://placehold.co/100x150?text=Sneakers+2",
+        "https://placehold.co/100x150?text=Sneakers+1",
+        "https://placehold.co/100x150?text=Sneakers+2",
+        "https://placehold.co/100x150?text=Sneakers+1",
+      ],
+      mainImage: "https://placehold.co/600x800?text=Street+Sneakers",
+      bottomBanner: "https://placehold.co/1200x400?text=Sneakers+Banner",
+      specs: [
+        { label: "Material", value: "Mesh + Synthetic" },
+        { label: "Sole", value: "Rubber" },
+      ],
+      reviews: [
+        { user: "Daniel", rating: 5, comment: "Super comfortable!" },
+        { user: "Ava", rating: 4, comment: "Very stylish sneakers!" },
+      ],
+      relatedProducts: [
+        {
+          name: "Denim Jacket",
+          price: 119,
+          image: "https://placehold.co/600x800?text=Denim+Jacket",
+        },
+      ],
+    },
+      // PRODUCT 5 ---------------------------------------
+    {
+      id: 4,
+      title: "Street Sneakers",
+      originalPrice: 169,
+      discountedPrice: 149,
+      rating: 5,
+      reviewsCount: 152,
+      shortDescription:
+        "Trendy sneakers with cushioned soles and sleek design.",
+      longDescription:
+        "Built for both performance and fashion, Street Sneakers provide excellent grip and cushioning. Designed with breathable mesh for all-day comfort.",
+      category: ["Men", "Shoes"],
+      tags: ["Sneakers", "Streetwear", "Comfort"],
+      sizes: ["40", "41", "42", "43"],
+      images: [
+        "https://placehold.co/100x150?text=Sneakers+1",
+        "https://placehold.co/100x150?text=Sneakers+2",
+        "https://placehold.co/100x150?text=Sneakers+1",
+        "https://placehold.co/100x150?text=Sneakers+2",
+        "https://placehold.co/100x150?text=Sneakers+1",
+      ],
+      mainImage: "https://placehold.co/600x800?text=Street+Sneakers",
+      bottomBanner: "https://placehold.co/1200x400?text=Sneakers+Banner",
+      specs: [
+        { label: "Material", value: "Mesh + Synthetic" },
+        { label: "Sole", value: "Rubber" },
+      ],
+      reviews: [
+        { user: "Daniel", rating: 5, comment: "Super comfortable!" },
+        { user: "Ava", rating: 4, comment: "Very stylish sneakers!" },
+      ],
+      relatedProducts: [
+        {
+          name: "Denim Jacket",
+          price: 119,
+          image: "https://placehold.co/600x800?text=Denim+Jacket",
+        },
+      ],
+    },
+      // PRODUCT 6 ---------------------------------------
+    {
+      id: 4,
+      title: "Street Sneakers",
+      originalPrice: 169,
+      discountedPrice: 149,
+      rating: 5,
+      reviewsCount: 152,
+      shortDescription:
+        "Trendy sneakers with cushioned soles and sleek design.",
       longDescription:
         "Built for both performance and fashion, Street Sneakers provide excellent grip and cushioning. Designed with breathable mesh for all-day comfort.",
       category: ["Men", "Shoes"],
@@ -186,8 +279,16 @@ export default function ProductDetails() {
     },
   ];
 
+  // -----------------------------------------
+  // FIND PRODUCT
+  // -----------------------------------------
   const product = products.find((p) => p.id === Number(id));
-  const {addToCart} = Usecart()
+
+  // -----------------------------------------
+  // HANDLE IMAGE SWITCHING
+  // -----------------------------------------
+  const [activeImage, setActiveImage] = useState(product?.mainImage);
+
   const [selectedSize, setSelectedSize] = useState(
     product ? product.sizes[0] : ""
   );
@@ -205,39 +306,50 @@ export default function ProductDetails() {
 
   return (
     <div className="min-h-screen bg-white px-6 lg:px-16 py-10">
-      <Header/>
+      <Header />
+
       {/* Breadcrumb */}
-      <div className="text-sm text-gray-500 mb-6">
+      <div className="text-sm text-gray-500 mb-6 mt-12">
         HOME / PRODUCTS /{" "}
         <span className="text-gray-800 font-medium">{product.title}</span>
       </div>
 
-      {/* Product Info */}
+      {/* Product Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Images */}
+        {/* IMAGES SECTION */}
         <div className="flex flex-col md:flex-row gap-4">
+          {/* Thumbnails */}
           <div className="flex md:flex-col gap-3 justify-center">
             {product.images.map((src, i) => (
               <img
                 key={i}
                 src={src}
+                onClick={() => setActiveImage(src)}
                 alt={`Thumbnail ${i + 1}`}
-                className="w-20 h-24 object-cover rounded-lg cursor-pointer border hover:border-gray-400 transition"
+                className={`w-20 h-24 object-cover rounded-lg cursor-pointer border transition
+                  ${
+                    activeImage === src
+                      ? "border-black"
+                      : "hover:border-gray-400"
+                  }
+                `}
               />
             ))}
           </div>
+
+          {/* Main Image */}
           <div className="flex-1">
             <img
-              src={product.mainImage}
+              src={activeImage}
               alt={product.title}
               className="w-full rounded-2xl shadow-md"
             />
           </div>
         </div>
 
-        {/* Details */}
+        {/* DETAILS */}
         <div className="flex flex-col justify-center space-y-6">
-          <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 leading-snug">
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
             {product.title}
           </h1>
 
@@ -269,14 +381,12 @@ export default function ProductDetails() {
             </span>
           </div>
 
-          {/* Description */}
-          <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-            {product.shortDescription}
-          </p>
+          {/* Short Description */}
+          <p className="text-gray-600">{product.shortDescription}</p>
 
           {/* Size Selector */}
           <div>
-            <h3 className="text-gray-700 font-semibold mb-2">Select Size</h3>
+            <h3 className="font-semibold mb-2 text-gray-700">Select Size</h3>
             <div className="flex gap-3 flex-wrap">
               {product.sizes.map((size) => (
                 <button
@@ -286,7 +396,7 @@ export default function ProductDetails() {
                     selectedSize === size
                       ? "bg-gray-900 text-white"
                       : "bg-white text-gray-700 hover:bg-gray-100"
-                  } transition`}
+                  }`}
                 >
                   {size}
                 </button>
@@ -294,22 +404,22 @@ export default function ProductDetails() {
             </div>
           </div>
 
-   {/* ✅ Add to Cart Button */}
-     <button
-  onClick={() => addToCart({ ...product, size: selectedSize })}
-  className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
->
-  Add to Cart
-</button>
+          {/* ADD TO CART */}
+          <button
+            onClick={() => addToCart({ ...product, size: selectedSize })}
+            className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
+          >
+            Add to Cart
+          </button>
 
-
-          <div className="pt-4 border-t border-gray-200 text-sm text-gray-600">
+          {/* Meta Info */}
+          <div className="pt-4 border-t text-sm text-gray-600">
             <p>
-              <span className="font-semibold text-gray-700">Category:</span>{" "}
+              <span className="font-semibold">Category:</span>{" "}
               {product.category.join(", ")}
             </p>
             <p>
-              <span className="font-semibold text-gray-700">Tags:</span>{" "}
+              <span className="font-semibold">Tags:</span>{" "}
               {product.tags.join(", ")}
             </p>
           </div>
@@ -318,43 +428,33 @@ export default function ProductDetails() {
 
       {/* Extended Sections */}
       <div className="mt-16 space-y-16">
-        {/* Product Details */}
+        {/* DETAILS */}
         <section>
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">
-            Product Details
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            {product.longDescription}
-          </p>
+          <h2 className="text-xl font-semibold mb-3">Product Details</h2>
+          <p className="text-gray-600">{product.longDescription}</p>
         </section>
 
-        {/* Specifications */}
+        {/* SPECS */}
         <section>
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">
-            Specifications
-          </h2>
+          <h2 className="text-xl font-semibold mb-3">Specifications</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {product.specs.map((spec, i) => (
               <div key={i} className="flex justify-between border-b pb-2">
-                <span className="text-gray-700 font-medium">{spec.label}</span>
+                <span className="font-medium">{spec.label}</span>
                 <span className="text-gray-600">{spec.value}</span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Reviews */}
+        {/* REVIEWS */}
         <section>
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">
-            Customer Reviews
-          </h2>
+          <h2 className="text-xl font-semibold mb-3">Customer Reviews</h2>
           <div className="space-y-6">
             {product.reviews.map((review, i) => (
               <div key={i} className="border-b pb-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-700">
-                    {review.user}
-                  </h3>
+                <div className="flex justify-between">
+                  <h3 className="font-semibold">{review.user}</h3>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, j) => (
                       <Star
@@ -369,17 +469,15 @@ export default function ProductDetails() {
                     ))}
                   </div>
                 </div>
-                <p className="text-gray-600 mt-2">{review.comment}</p>
+                <p className="text-gray-600 mt-1">{review.comment}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Related Products */}
+        {/* RELATED PRODUCTS */}
         <section>
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">
-            Related Products
-          </h2>
+          <h2 className="text-xl font-semibold mb-3">Related Products</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {product.relatedProducts.map((item, i) => (
               <div
@@ -402,16 +500,17 @@ export default function ProductDetails() {
           </div>
         </section>
 
-        {/* Bottom Banner */}
+        {/* BOTTOM BANNER */}
         <div className="mt-10 pb-4">
           <img
             src={product.bottomBanner}
-            alt="Product showcase banner"
+            alt="Product Banner"
             className="w-full h-[400px] object-cover rounded-2xl shadow-lg"
           />
         </div>
       </div>
-      <Footer/>
+
+      <Footer />
     </div>
   );
 }
