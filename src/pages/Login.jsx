@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
@@ -12,8 +14,8 @@ export default function Login() {
 
         {/* LEFT SIDE – INFO PANEL */}
         <div className="bg-[#14324A] text-white p-10 flex flex-col justify-between">
-          
-          {/* Logo + Create account */}
+
+          {/* Logo + Login Button */}
           <div>
             <div className="flex items-center justify-between">
               <Link to="/" className="text-3xl font-bold tracking-wide">
@@ -21,23 +23,23 @@ export default function Login() {
               </Link>
 
               <Link
-                to="/register"
+                to="/login"
                 className="bg-white text-[#14324A] px-4 py-2 rounded-full font-medium shadow hover:bg-gray-100 transition"
               >
-                Create Account
+                Login
               </Link>
             </div>
 
             <div className="mt-12 flex justify-center">
               <img
                 src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png"
-                alt="Login Illustration"
+                alt="Register Illustration"
                 className="w-72"
               />
             </div>
           </div>
 
-          {/* Back Home Button */}
+          {/* Back Home */}
           <div className="mt-8 text-center">
             <Link
               to="/"
@@ -48,20 +50,29 @@ export default function Login() {
           </div>
         </div>
 
-        {/* RIGHT SIDE – LOGIN FORM */}
+        {/* RIGHT SIDE – REGISTER FORM */}
         <div className="p-10 bg-white">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-800">Login</h2>
+            <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
             <p className="text-gray-500 text-sm mt-2">
-              Sign into your ShopZen account
+              Join ShopZen and start your journey
             </p>
           </div>
 
           <form className="space-y-5">
             <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Email
-              </label>
+              <label className="block mb-1 font-medium text-gray-700">Full Name</label>
+              <input
+                type="text"
+                placeholder="John Doe"
+                className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 placeholder="demo@gmail.com"
@@ -72,9 +83,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Password
-              </label>
+              <label className="block mb-1 font-medium text-gray-700">Password</label>
               <input
                 type="password"
                 placeholder="••••••"
@@ -84,20 +93,22 @@ export default function Login() {
               />
             </div>
 
-            <div className="flex justify-end">
-              <Link
-                to="/forgot"
-                className="text-blue-600 text-sm hover:underline"
-              >
-                Forgot Password?
-              </Link>
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+              <input
+                type="password"
+                placeholder="••••••"
+                className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                value={confirmPass}
+                onChange={(e) => setConfirmPass(e.target.value)}
+              />
             </div>
 
             <button
               type="submit"
               className="w-full bg-[#14324A] text-white py-3 rounded-xl text-lg font-semibold hover:bg-[#0f2539] transition"
             >
-              Login
+              Create Account
             </button>
           </form>
 
@@ -107,7 +118,7 @@ export default function Login() {
             <div className="absolute left-0 right-0 top-1/2 border-b border-gray-200"></div>
           </div>
 
-          {/* Social Login */}
+          {/* Social Register */}
           <div className="flex justify-center gap-4">
             <button className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition">
               <FaGoogle size={22} />
@@ -119,9 +130,9 @@ export default function Login() {
           </div>
 
           <p className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-medium">
-              Create free account
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-600 font-medium">
+              Login here
             </Link>
           </p>
         </div>

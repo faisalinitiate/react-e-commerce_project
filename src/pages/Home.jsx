@@ -313,11 +313,12 @@ import sneakers from "../assets/sneakers.jpg";
 import skincare from "../assets/skincare.jpg";
 
 import  wireless from "../assets/wireless.png";
-import bluebag from "../assets/bluebag.jpg"
-
+import bluebag from "../assets/bluebag.jpg";
 import { useLocation } from "react-router-dom";
 import { Star } from "lucide-react";
+import { Link } from "react-router-dom";
 import { FaClock, FaShippingFast, FaHeadset, FaTag } from "react-icons/fa";
+import { TRENDING_DATA } from "../data/trendingData";
 import "../index.css";
 
 
@@ -514,26 +515,43 @@ export default function Home() {
       {/* ======================================== */}
       {/*       TRENDING PRODUCTS (SECTION 3)      */}
       {/* ======================================== */}
-      <section ref={offerRef}>
-        <h1 className="text-3xl font-semibold sm:ml-32 mt-12 mb-6">Trending Products</h1>
+      <section className="mt-12">
+      <h1 className="text-3xl font-semibold sm:ml-32 mb-6">
+        Trending Products
+      </h1>
 
-        <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {TRENDING_DATA.map((item) => (
+          <Link to={`/trending/${item.id}`} key={item.id}>
+            <div className="bg-white border rounded-lg shadow p-4 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition">
 
-          {ITEMS.map((item, i) => (
-            <div key={i} className="bg-white border rounded-lg shadow p-4 flex flex-col items-center text-center">
+              <div className="relative w-full h-44 flex items-center justify-center overflow-hidden">
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="object-cover h-full w-full rounded"
+                />
 
-              <div className="relative w-68 h-28 flex items-center justify-center overflow-hidden">
-                <img src={item.img} alt={item.title} className="object-cover h-full" />
-                <span className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-semibold text-white ${item.tag === "New" ? "bg-green-500" : "bg-yellow-500"}`}>
+                <span
+                  className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-semibold text-white ${
+                    item.tag === "New" ? "bg-green-500" : "bg-yellow-500"
+                  }`}
+                >
                   {item.tag}
                 </span>
               </div>
 
-              <h3 className="mt-4 text-sm font-semibold text-gray-800">{item.title}</h3>
+              <h3 className="mt-4 text-base font-semibold text-gray-800">
+                {item.title}
+              </h3>
 
               <div className="mt-2">
-                <span className="block font-bold text-gray-900">${item.price.toFixed(2)}</span>
-                <span className="text-xs line-through text-gray-400">${item.old.toFixed(2)}</span>
+                <span className="block font-bold text-gray-900">
+                  ${item.price.toFixed(2)}
+                </span>
+                <span className="text-xs line-through text-gray-400">
+                  ${item.old.toFixed(2)}
+                </span>
               </div>
 
               <div className="flex items-center justify-center space-x-2 mt-3">
@@ -544,11 +562,12 @@ export default function Home() {
               <button className="mt-4 w-full border border-gray-300 rounded py-2 text-sm hover:bg-gray-100">
                 Shop Now
               </button>
-            </div>
-          ))}
 
-        </div>
-      </section>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
 
 
 

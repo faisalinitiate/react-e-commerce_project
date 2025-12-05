@@ -8,11 +8,15 @@ import Faq from "./pages/Faq";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import Login from "./pages/Login";
+import TrendingDetails from "./pages/TrendingDeatils";
 
 import Header from "./common/Header.jsx";
 import Footer from "./common/Footer.jsx";
 import CartSideBar  from "./common/CartSideBar.jsx";
 import { CartProvider } from "./common/Usecart.jsx"; // ⬅ IMPORTANT
+
+
+
 
 const router = createBrowserRouter([
   {
@@ -39,14 +43,15 @@ const router = createBrowserRouter([
     path: "/products/:id",
     element: <ProductDetails />,
   },
-  // {
-  //   path: "/trending/:id",
-  //   element: <TrendingDetails />,   // ⬅ ADD THIS
-  // },
+  {
+    path: "/trending/:id",
+    element: <TrendingDetails />,   // ⬅ ADD THIS
+  },
   { 
     path: "/login", 
     element: <Login /> 
   },
+
 ]);
 
 
